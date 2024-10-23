@@ -1,0 +1,93 @@
+# 使用目的：可用于备份上游仓库
+# 使用方法：
+# 1.创建一个公开仓库/私有仓库；命名为backups
+# 2.再仓库里设置personal access token，token名称为SYNC_GITHUB_TOKEN，并授予对应权限。
+# 3.设置好Set up Git user部分的example@example.com和username改为你的GitHub绑定邮箱和你的GitHub用户名；
+# 4.将第83行的Levi替换为你的GitHub用户名
+# 5.找到Sync Upstream Repositories部分，可以同步多个上游仓库。按照格式填写你要同步的上游仓库。如：上游仓库用户名Loyalsoldier上游仓库surge-rules上游分支release，则写为["Loyalsoldier"]="surge-rules:release"。
+
+
+
+name: Upstream Sync
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # 每天同步
+  workflow_dispatch:
+
+jobs:
+  sync_repos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Target Repositories
+        uses: actions/checkout@v4
+
+      - name: Set up Git user
+        run: |
+          git config --global user.email "x example@example.com"
+          git config --global user.name "username"
+
+      - name: Sync Upstream Repositories
+        run: |
+          declare -A repos=(
+            ["ACL4SSR"]="ACL4SSR:master"
+            ["Maasea"]="sgmodule:master"
+            ["Sliverkiss"]="QuantumultX:main"
+            ["Yu9191"]="Rewrite:main"
+            ["Loyalsoldier"]="surge-rules:release"
+          )
+ 
+          # Create a temp directory to clone repositories
+          temp_dir=$(mktemp -d)
+
+          for author in "${!repos[@]}"; do
+            IFS=':' read -r repo branch <<< "${repos[$author]}"
+            dir="$temp_dir/$author/$repo"
+
+            echo "Syncing $author/$repo..."
+            mkdir -p "$dir"
+            git clone "https://github.com/$author/$repo.git" "$dir" || continue
+            cd "$dir"
+
+            # Fetch upstream
+            echo "Fetching upstream..."
+            git fetch origin
+
+            # Check if the branch exists on remote
+            if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+              # Switch to the appropriate branch
+              git checkout "$branch"
+            else
+              echo "Branch $branch does not exist, creating new branch."
+              git checkout -b "$branch"
+            fi
+
+            # Merge upstream changes
+            echo "Merging upstream changes from $branch..."
+            git merge "origin/$branch" --no-edit || { echo "[Warning] Merge failed, resetting..."; git reset --hard "origin/$branch"; }
+
+            # Pull any remote changes
+            echo "Pulling remote changes..."
+            git pull origin "$branch" || { echo "[Warning] Pull failed, forcing reset..."; git fetch origin && git reset --hard "origin/$branch"; }
+
+            # Return to the main workspace directory
+            cd "$GITHUB_WORKSPACE"
+
+            # Sync to backups
+            echo "Syncing changes to backups..."
+            backup_dir="$GITHUB_WORKSPACE/$author" # Define the backup directory
+            mkdir -p "$backup_dir"
+            rsync -av --exclude='.git/' "$temp_dir/$author/$repo/" "$backup_dir/" # Use rsync to copy contents
+            git add "$author"
+            git commit -m "Sync $repo from $author" || echo "No changes to commit."
+            git push "https://${{ secrets.SYNC_GITHUB_TOKEN }}@github.com/Levi/backups.git" main
+
+            # Clean up temporary repo directory
+            cd -
+          done
+
+          # Clean up the temp directory
+          rm -rf "$temp_dir"
