@@ -1,0 +1,62 @@
+#!name=去广告合集
+#!desc=目前只有
+
+
+
+[URL Rewrite]
+
+# 好价 - 今日好券
+^https:\/\/h5\.smzdm\.com\/user\/coupon\/coupon_list\? REJECT
+
+[Rule]
+
+
+[Header Rewrite]
+
+
+
+
+[Body Rewrite]
+
+http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/homepage\/paged_waterfall_recommendations\.json$ 'del(.multiplex_cells[] | select(.recommendation_cell.impression_sensor_events[]?.properties.target_type? == "ad"))'
+http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json$ '.content.tab_name |= map(select(. != "减脂" and . != "分类"))'
+
+
+
+[Map Local]
+#移动
+^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/(explorePage\/getAdverList|init\/startInit) data-type=text data=""
+#美柚开屏
+^https:\/\/ad\.seeyouyima\.com\/v1\/getad\? data-type=text data="200"
+#知乎开屏
+^https:\/\/api\.zhihu\.com\/commercial_api\/real_time_launch_v2\? data-type=text data="200"
+#下厨房
+# 开屏广告
+^https:\/\/api\.xiachufang\.com\/v2\/ad\/ data-type=text data="{}" status-code=200
+
+# 首页 - 关注 - 作品推荐
+^https:\/\/api\.xiachufang\.com\/v2\/account\/feeds_v7\.json data-type=text data="{}" status-code=200
+
+# 首页 - 横幅推广
+^https:\/\/api\.xiachufang\.com\/v2\/homepage1810\/init_page\.json data-type=text data="{}" status-code=200
+
+# 发布 - 早餐马拉松 - 横幅
+^https:\/\/api\.xiachufang\.com\/v2\/mark_mission\/get_sticker_info\.json data-type=text data="{}" status-code=200
+
+#雪球
+# 开屏广告
+^https:\/\/api\.xueqiu\.com\/snowpard\/launch_strategy\/query\.json\?channel=1&height=932 data-type=text data="{}" status-code=200
+#行业基金
+^https:\/\/api\.xueqiu\.com\/analysis\/status\/v4\/underlying_product\.json\? data-type=text data="200"
+#信息流广告
+^https:\/\/api\.xueqiu\.com\/snowpard\/launch_strategy\/query\.json\?channel= data-type=text data="200"
+#联通
+^https?:\/\/m\.client\.10010\.com\/mobileService\/customer\/accountListData\.htm data-type=text data='{"imgIndex":"0","adv":{"startup_adv":{"advCntList":[],"buttonList":[]}},"respCode":"0000"}' header='Content-Type:application/json'
+
+
+[Script]
+
+
+[MITM]
+h2 = true
+hostname = %APPEND%,m.client.10010.com,client.app.coc.10086.cn,api.xiachufang.com,api.xueqiu.com,open.xueqiu.com,stock.xueqiu.com,39.103.79.14,39.106.97.84,47.95.49.75,101.201.62.20,101.201.62.26,101.201.175.228,124.250.48.3,182.92.145.50,182.92.251.113,kelee.one
