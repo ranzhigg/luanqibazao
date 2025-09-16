@@ -10,14 +10,19 @@
 
 [Rule]
 
+DOMAIN,m1.ad.10010.com,REJECT
 
 [Header Rewrite]
 
 
-
-
 [Body Rewrite]
-
+#联通
+http-response-jq ^https:\/\/m\.client\.10010\.com\/search_service\/tyfbSearch\/searchDiscoverListExpress '.data = []'
+http-response-jq ^https:\/\/m\.client\.10010\.com\/search_service\/search\/searchScrollWord '.["113000004"] = []'
+http-response-jq ^https:\/\/m\.client\.10010\.com\/clientIndex\/v1\/api\/navHome '.datas.homeTopMenuItems |= map(select(.menuName != "通通" and .menuName != "vowifi" and .menuName != "签到" and .menuName != ""))'
+http-response-jq ^https:\/\/m\.client\.10010\.com\/clientIndex\/homefusion\/fuInter 'del(.["HomeFusion.fuchuangAdv_A8"], .["HomeFusion.bottomLabel"])'
+http-response-jq ^https:\/\/m\.client\.10010\.com\/clientMyPage\/v1\/api\/myWallet '.data.payShowFlag = false
+#下厨房
 http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/homepage\/paged_waterfall_recommendations\.json$ 'del(.multiplex_cells[] | select(.recommendation_cell.impression_sensor_events[]?.properties.target_type? == "ad"))'
 http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json$ '.content.tab_name |= map(select(. != "减脂" and . != "分类"))'
 
