@@ -23,7 +23,6 @@ http-response-jq ^https:\/\/m\.client\.10010\.com\/clientIndex\/v1\/api\/navHome
 http-response-jq ^https:\/\/m\.client\.10010\.com\/clientIndex\/homefusion\/fuInter 'del(.["HomeFusion.fuchuangAdv_A8"], .["HomeFusion.bottomLabel"])'
 http-response-jq ^https:\/\/m\.client\.10010\.com\/clientMyPage\/v1\/api\/myWallet '.data.payShowFlag = false
 #下厨房
-[Script]
 # 去掉 tab_name 里的 减脂 / 分类
 http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '.content.tab_name -= ["减脂","分类"] | .content.app_track_path = {}'
 
