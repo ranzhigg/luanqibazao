@@ -24,7 +24,7 @@ http-response-jq ^https:\/\/m\.client\.10010\.com\/clientIndex\/homefusion\/fuIn
 http-response-jq ^https:\/\/m\.client\.10010\.com\/clientMyPage\/v1\/api\/myWallet '.data.payShowFlag = false
 #下厨房
 # 去掉 tab_name 里的 减脂 / 分类
-http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '.content.tab_name -= ["减脂","分类"] | .content.app_track_path = {}'
+http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '.content.tab_name |= map(select(. != "减脂" and . != "分类")) | .content.app_track_path = {}'
 
 
 
