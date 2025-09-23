@@ -1,13 +1,13 @@
 (function () {
   if (!$response?.body) { $done({}); return; }
 
-  // 五组固定颜色（十进制）
+  // 五组性冷淡系淡色（十进制）
   const colors = [
-    6970061,   // 灰蓝 #6A5ACD
-    7372944,   // 石板灰 #708090
-    12433259,  // 卡其 #BDB76B
-    12357519,  // 玫瑰棕 #BC8F8F
-    4620980    // 深海蓝 #4682B4
+    11193542,  // 淡灰蓝 #A9B7C6
+    11513775,  // 雾霾灰 #B0B0B0
+    14474460,  // 米白灰 #DCDCDC
+    12632297,  // 浅卡其 #C0C0A9
+    13484213   // 莫兰迪粉 #CDB7B5
   ];
 
   function pickColor() {
@@ -32,7 +32,7 @@
 
     $done({ body: JSON.stringify(obj) });
   } catch (e) {
-    console.log("[dm_color_random_fixed5] parse error:", e);
+    console.log("[dm_color_cold_tone] parse error:", e);
     $done({});
   }
 })();
