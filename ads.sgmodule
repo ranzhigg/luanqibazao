@@ -29,6 +29,7 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 ^https:\/\/ad\.seeyouyima\.com\/v1\/getad\? data-type=text data="200"
 #知乎开屏
 ^https:\/\/api\.zhihu\.com\/commercial_api\/real_time_launch_v2\? data-type=text data="200"
+
 #下厨房
 # 开屏广告
 ^https:\/\/api\.xiachufang\.com\/v2\/ad\/ data-type=text data="{}" status-code=200
@@ -43,12 +44,30 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 ^https:\/\/api\.xiachufang\.com\/v2\/mark_mission\/get_sticker_info\.json data-type=text data="{}" status-code=200
 
 #雪球
-# 开屏广告
 ^https:\/\/api\.xueqiu\.com\/snowpard\/launch_strategy\/query\.json\?channel=1&height=932 data-type=text data="{}" status-code=200
-#行业基金
-^https:\/\/api\.xueqiu\.com\/analysis\/status\/v4\/underlying_product\.json\? data-type=text data="200"
-#信息流广告
-^https:\/\/api\.xueqiu\.com\/snowpard\/launch_strategy\/query\.json\?channel= data-type=text data="200"
+
+^https:\/\/open\.xueqiu\.com\/mpaas\/config\/content\?.+home_visitor_relation_config data-type=text data="{}" status-code=200
+
+^https:\/\/api\.xueqiu\.com\/snowpard\/launch_strategy\/query\.json\?channel=1&location=0&model=6&page=4 data-type=text data="{}" status-code=200
+
+^https:\/\/api\.xueqiu\.com\/snowpard\/launch_strategy\/query\.json\?channel=1&location=0&model=1&page=(4|6) data-type=text data="{}" status-code=200
+
+^https:\/\/api\.xueqiu\.com\/ucprofile\/api\/user\/batchGetUserBasicInfo\.json data-type=text data="{}" status-code=200
+
+^https:\/\/api\.xueqiu\.com\/lightsnow\/launch\/plan\/bee\/query\.json\?channel=1&ip_label=&label_json=.+new_customer=1 data-type=text data="{}" status-code=200
+
+^https:\/\/api\.xueqiu\.com\/lightsnow\/optional\/banner\/query\.json data-type=text data="{}" status-code=200
+
+^https:\/\/open\.xueqiu\.com\/mpaas\/config\/content\?.+cube_detail_bottom_operation_trade_button data-type=text data="{}" status-code=200
+
+^https:\/\/api\.xueqiu\.com\/recommend-proxy\/card\/zj_card\.json\?feed_id=207 data-type=text data="{}" status-code=200
+
+^https:\/\/api\.xueqiu\.com\/recommend-proxy\/card\/portfolio_tab_symbol\.json data-type=text data="{}" status-code=200
+
+^https:\/\/stock\.xueqiu\.com\/v5\/stock\/group\/recommend\/default\/list\.json data-type=text data="{}" status-code=200
+
+^https:\/\/api\.xueqiu\.com\/livestream\/structure\/live\/hotCard\.json data-type=text data="{}" status-code=200
+
 #联通
 ^https?:\/\/m\.client\.10010\.com\/mobileService\/customer\/accountListData\.htm data-type=text data='{"imgIndex":"0","adv":{"startup_adv":{"advCntList":[],"buttonList":[]}},"respCode":"0000"}' header='Content-Type:application/json'
 
