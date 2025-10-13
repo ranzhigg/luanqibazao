@@ -68,6 +68,8 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 
 ^https:\/\/api\.xueqiu\.com\/livestream\/structure\/live\/hotCard\.json data-type=text data="{}" status-code=200
 
+^https:\/\/api\.xueqiu\.com\/rainbow\/ai\/question\/generate\/hot_stock_argument\.json\? data-type=text data="{}" status-code=200
+
 #联通
 ^https?:\/\/m\.client\.10010\.com\/mobileService\/customer\/accountListData\.htm data-type=text data='{"imgIndex":"0","adv":{"startup_adv":{"advCntList":[],"buttonList":[]}},"respCode":"0000"}' header='Content-Type:application/json'
 
