@@ -5,6 +5,7 @@
 
 [URL Rewrite]
 
+^https:\/\/api\.xueqiu\.com\/ucprofile\/api\/user\/batchGetUserBasicInfo\.json\? - reject
 
 [Rule]
 
