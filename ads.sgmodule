@@ -73,10 +73,12 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 #联通
 ^https?:\/\/m\.client\.10010\.com\/mobileService\/customer\/accountListData\.htm data-type=text data='{"imgIndex":"0","adv":{"startup_adv":{"advCntList":[],"buttonList":[]}},"respCode":"0000"}' header='Content-Type:application/json'
 
+#360智慧生活
+^https:\/\/app\.home\.360\.cn\/v1\/config\/custom_config data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 
 [Script]
 
 
 [MITM]
 h2 = true
-hostname = %APPEND%,m.client.10010.com,client.app.coc.10086.cn,api.xiachufang.com,api.xueqiu.com,open.xueqiu.com,stock.xueqiu.com,39.103.79.14,39.106.97.84,47.95.49.75,101.201.62.20,101.201.62.26,101.201.175.228,124.250.48.3,182.92.145.50,182.92.251.113,kelee.one
+hostname = %APPEND%,m.client.10010.com,client.app.coc.10086.cn,api.xiachufang.com,api.xueqiu.com,open.xueqiu.com,stock.xueqiu.com,39.103.79.14,39.106.97.84,47.95.49.75,101.201.62.20,101.201.62.26,101.201.175.228,124.250.48.3,182.92.145.50,182.92.251.113,kelee.one,app.home.360.cn
