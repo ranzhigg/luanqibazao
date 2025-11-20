@@ -3,71 +3,40 @@
  * 广告处理
 
 [rewrite_local]
-^https:\/\/api\.bevol\.com\/(?:appmain\/app\/home\/page|usercenter\/account\/info|personal\/page|appmain\/app\/home\/launch|trialbox\/shop\/app\/homePage)$ url script-response-body https://raw.githubusercontent.com/Yu9191/Rewrite/refs/heads/main/mlxx.js
+^https:\/\/api\.bevol\.com\/(?:appmain\/app\/home\/page|usercenter\/account\/info|personal\/page|appmain\/app\/home\/launch|trialbox\/shop\/app\/homePage)$ url script-response-body https://raw.githubusercontent.com/ranzhigg/luanqibazao/refs/heads/main/mzxl.js
 
 [mitm]
 hostname = api.bevol.com
 */
-
 try {
   let obj = JSON.parse($response.body);
   const url = $request.url;
 
-  /* =============================
-   * 首页（彻底清干净）
-   =============================*/
+  /* 首页横幅广告 */
   if (url.includes("/appmain/app/home/page")) {
+    obj.result.centerBannerAdvert = [];
+    obj.result.programmaticAdvertising = null;
+    delete obj.result.aiEntranceConfig;
+    delete obj.result.aiEntranceInputTipDefault;
+    delete obj.result.questionnaireMap;
 
-    // 删除广告 & AI & 优选 & 小样 & 问卷等所有额外模块
-    const removeKeys = [
-      "centerBannerAdvert",
-      "programmaticAdvertising",
-      "aiEntranceConfig",
-      "aiEntranceInputTipDefault",
-      "questionnaireMap",
-      "homePageSmallSampleTest",      // 小样试用
-      "homePageBeautySelection",      // 美妆优选
-      "small_sample",                 // 某些版本小样字段
-      "beauty_selection",             // 兼容写法
-      "aiArea",
-      "aiConfig",
-      "aiModule"
-    ];
-
-    removeKeys.forEach(k => {
-      if (obj.result && obj.result[k] !== undefined) {
-        delete obj.result[k];
-      }
-    });
-
-    // 删除所有包含 ai 的字段（大小写通杀）
+    /* 删除 AI 相关 */
     for (const k in obj.result) {
       if (k.toLowerCase().includes("ai")) delete obj.result[k];
     }
 
-    // 删除所有广告相关字段（兼容未来新增）
-    for (const k in obj.result) {
-      if (k.toLowerCase().includes("ad")) delete obj.result[k];
+    /* 删除小样试用 */
+    if (obj.result.homePageSmallSampleTest) {
+      delete obj.result.homePageSmallSampleTest;
     }
 
-    // 删除可能出现的新组件
-    if (Array.isArray(obj.result.modules)) {
-      obj.result.modules = obj.result.modules.filter(m => {
-        const name = JSON.stringify(m).toLowerCase();
-        return !(
-          name.includes("ad") ||
-          name.includes("ai") ||
-          name.includes("sample") ||
-          name.includes("trial") ||
-          name.includes("beauty")
-        );
-      });
+    /* 删除美妆优选 */
+    if (obj.result.homePageBeautySelection) {
+      delete obj.result.homePageBeautySelection;
     }
   }
 
-  /* =============================
-   * 个人中心
-   =============================*/
+  /* 个人中心 （会员功能无效） */
   if (url.includes("/personal/page")) {
     if (obj.result.personal_center_banner) obj.result.personal_center_banner = [];
     if (obj.result.programmaticAdvertising) obj.result.programmaticAdvertising = [];
@@ -85,17 +54,13 @@ try {
     }
   }
 
-  /* =============================
-   * 启动页广告
-   =============================*/
+  /* 启动广告 */
   if (url.includes("/appmain/app/home/launch")) {
     obj.result.openAppAdvert.openAdvertOnline = [];
     obj.result.openAdKeepTime = 0;
   }
 
-  /* =============================
-   * 用户信息（开屏关闭）
-   =============================*/
+  /* 用户信息（关闭开屏） */
   if (url.includes("/usercenter/account/info")) {
     if (obj.result) {
       obj.result.isAdOpen = 0;
@@ -104,9 +69,7 @@ try {
     }
   }
 
-  /* =============================
-   * 试用盒
-   =============================*/
+  /* 试用盒 */
   if (url.includes("/trialbox/shop/app/homePage")) {
     if (obj.result.bannerImages) obj.result.bannerImages = [];
     if (obj.result.moduleBannerImages) obj.result.moduleBannerImages = [];
