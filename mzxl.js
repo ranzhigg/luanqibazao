@@ -1,15 +1,18 @@
+/* 
+ * 美丽修行
+ * 广告处理
+
+[rewrite_local]
+^https:\/\/api\.bevol\.com\/(?:appmain\/app\/home\/page|usercenter\/account\/info|personal\/page|appmain\/app\/home\/launch|trialbox\/shop\/app\/homePage)$ url script-response-body https://raw.githubusercontent.com/Yu9191/Rewrite/refs/heads/main/mlxx.js
 
 [mitm]
 hostname = api.bevol.com
-
-
+*/
 try {
   let obj = JSON.parse($response.body);
   const url = $request.url;
 
-  /* ============================
-      首页横幅广告 / AI 内容
-  ============================ */
+  /* 首页横幅广告 */
   if (url.includes("/appmain/app/home/page")) {
     obj.result.centerBannerAdvert = [];
     obj.result.programmaticAdvertising = null;
@@ -17,28 +20,24 @@ try {
     delete obj.result.aiEntranceInputTipDefault;
     delete obj.result.questionnaireMap;
 
+    /* 删除 AI 相关字段 */
     for (const k in obj.result) {
       if (k.toLowerCase().includes("ai")) delete obj.result[k];
     }
 
-    /* 删除 小样试用 & 美妆优选 */
+    /* 删除 小样试用 / 美妆优选 */
     if (obj.result.homePageSmallSampleTest) {
-      delete obj.result.homePageSmallSampleTest;  // 小样试用
+      delete obj.result.homePageSmallSampleTest;
     }
     if (obj.result.homePageBeautySelection) {
-      delete obj.result.homePageBeautySelection;  // 美妆优选
+      delete obj.result.homePageBeautySelection;
     }
   }
 
-  /* ============================
-      个人中心页面
-  ============================ */
+  /* 个人中心 （会员功能无效） */
   if (url.includes("/personal/page")) {
-    if (obj.result.personal_center_banner)
-      obj.result.personal_center_banner = [];
-
-    if (obj.result.programmaticAdvertising)
-      obj.result.programmaticAdvertising = [];
+    if (obj.result.personal_center_banner) obj.result.personal_center_banner = [];
+    if (obj.result.programmaticAdvertising) obj.result.programmaticAdvertising = [];
 
     if (obj.result.memberRights) {
       obj.result.memberRights.isMember = true;
@@ -53,17 +52,13 @@ try {
     }
   }
 
-  /* ============================
-      启动广告
-  ============================ */
+  /* 启动广告 */
   if (url.includes("/appmain/app/home/launch")) {
     obj.result.openAppAdvert.openAdvertOnline = [];
     obj.result.openAdKeepTime = 0;
   }
 
-  /* ============================
-      用户信息（关闭开屏）
-  ============================ */
+  /* 用户信息（关闭开屏） */
   if (url.includes("/usercenter/account/info")) {
     if (obj.result) {
       obj.result.isAdOpen = 0;
@@ -72,16 +67,10 @@ try {
     }
   }
 
-  /* ============================
-      试用盒页面
-  ============================ */
+  /* 试用盒 */
   if (url.includes("/trialbox/shop/app/homePage")) {
-    if (obj.result.bannerImages) {
-      obj.result.bannerImages = [];  // 顶部广告
-    }
-    if (obj.result.moduleBannerImages) {
-      obj.result.moduleBannerImages = [];
-    }
+    if (obj.result.bannerImages) obj.result.bannerImages = [];
+    if (obj.result.moduleBannerImages) obj.result.moduleBannerImages = [];
   }
 
   $done({ body: JSON.stringify(obj) });
