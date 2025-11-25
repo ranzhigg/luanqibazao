@@ -13,8 +13,11 @@ DOMAIN,m1.ad.10010.com,REJECT
 
 [Header Rewrite]
 
+http-request https://(hub|pluginhub)\.kelee\.one/list\.json header-del if-none-match
 
 [Body Rewrite]
+
+http-response https://(hub|pluginhub)\.kelee\.one/list\.json "loon://import\?plugin=(https://kelee.one/Tool/Loon/Lpx/(.+).lpx)" "surge:///install-module?url=http://script.hub/file/_start_/$1/_end_/$2.sgmodule%3Ftype%3Dloon-plugin%26target%3Dsurge-module%26del%3Dtrue%26jqEnabled%3Dtrue%26pm%3D.%26sni%3D."
 
 #下厨房
 # 去掉 tab_name 里的 减脂 / 分类
@@ -54,4 +57,4 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 
 
 [MITM]  
-hostname = %APPEND% m.client.10010.com,client.app.coc.10086.cn,api.xiachufang.com,*.home.360.cn,api.zhihu.com,ad.seeyouyima.com
+hostname = %APPEND% m.client.10010.com,client.app.coc.10086.cn,api.xiachufang.com,*.home.360.cn,api.zhihu.com,ad.seeyouyima.com,hub.kelee.one, pluginhub.kelee.one
