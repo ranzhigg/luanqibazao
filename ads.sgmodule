@@ -53,6 +53,5 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 [Script]
 
 
-[MITM]
-h2 = true
-hostname = %APPEND%,m.client.10010.com,client.app.coc.10086.cn,api.xiachufang.com,*.home.360.cn,api.zhihu.com,ad.seeyouyima.com
+[MITM]  
+hostname = %APPEND% m.client.10010.com,client.app.coc.10086.cn,api.xiachufang.com,*.home.360.cn,api.zhihu.com,ad.seeyouyima.com
