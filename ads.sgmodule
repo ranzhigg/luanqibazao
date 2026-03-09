@@ -29,7 +29,7 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 
 
 
-^https:\/\/app-api\.yangjibao\.com\/app_config$ data-type=text data="{\"code\":200,\"message\":\"SUCCESS\",\"data\":{\"vip_reference_remid\":0,\"show_trade\":false}}"
+
 
 # 羊羔宝广告
 ^https:\/\/app-api\.yangjibao\.com\/unify_ad$ data-type=text data="{}"
