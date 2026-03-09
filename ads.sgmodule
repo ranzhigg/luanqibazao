@@ -26,6 +26,22 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 
 
 [Map Local]
+
+# 羊羔宝广告
+^https:\/\/app-api\.yangjibao\.com\/unify_ad$ data-type=text data="{}"
+
+# 羊羔宝新闻广告
+^https:\/\/app-api\.yangjibao\.com\/single_ad\?type=ad_news$ data-type=text data="{}"
+
+# VIP 信息页广告
+^https:\/\/app-api\.yangjibao\.com\/vip_information\?page=1$ data-type=text data="{}"
+
+# Tab 配置
+^https:\/\/app-api\.yangjibao\.com\/users\/v1\/preferences\/tab-config$ data-type=text data="[]"
+
+# App 配置
+^https:\/\/app-api\.yangjibao\.com\/app_config$ data-type=text data="{}"
+
 #移动
 ^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/(explorePage\/getAdverList|init\/startInit) data-type=text data=""
 #美柚开屏
