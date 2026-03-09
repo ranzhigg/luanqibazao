@@ -27,6 +27,10 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 
 [Map Local]
 
+
+
+^https:\/\/app-api\.yangjibao\.com\/app_config$ data-type=text data="{\"code\":200,\"message\":\"SUCCESS\",\"data\":{\"vip_reference_remid\":0,\"show_trade\":false}}"
+
 # 羊羔宝广告
 ^https:\/\/app-api\.yangjibao\.com\/unify_ad$ data-type=text data="{}"
 
@@ -44,8 +48,10 @@ http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(\?.*)? '
 
 #移动
 ^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/(explorePage\/getAdverList|init\/startInit) data-type=text data=""
+
 #美柚开屏
 ^https:\/\/ad\.seeyouyima\.com\/v1\/getad\? data-type=text data="200"
+
 #知乎开屏
 ^https:\/\/api\.zhihu\.com\/commercial_api\/real_time_launch_v2\? data-type=text data="200"
 
