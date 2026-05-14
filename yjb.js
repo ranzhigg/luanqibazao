@@ -1,10 +1,40 @@
+// =====================
+// 1. 如果是 HTTP REQUEST（抓 cookie）
+// =====================
+if (typeof $request !== "undefined") {
+
+  let cookie = $request.headers["Cookie"] || $request.headers["cookie"];
+  let auth = $request.headers["authorization"];
+
+  let msg = "";
+
+  if (cookie) {
+    $persistentStore.write(cookie, "yjb_cookie");
+    msg += "Cookie 已更新\n";
+  }
+
+  if (auth) {
+    $persistentStore.write(auth, "yjb_auth");
+    msg += "Authorization 已更新\n";
+  }
+
+  if (msg) {
+    $notification.post("养基宝抓包", "登录态更新成功", msg);
+  }
+
+  $done({});
+  return;
+}
+
+// =====================
+// 2. 如果是 CRON（跑基金）
+// =====================
+
 const url = "https://app-api.yangjibao.com/market/v1/fund/batch";
 
-// ===== 读取动态 cookie / auth =====
 const cookie = $persistentStore.read("yjb_cookie") || "";
 const auth = $persistentStore.read("yjb_auth") || "";
 
-// ===== 时间戳 =====
 const ts = Math.floor(Date.now() / 1000);
 
 // ===== 持仓 =====
@@ -15,15 +45,13 @@ const holdings = {
   "159937": 3000
 };
 
-// ===== 请求体 =====
 const body = JSON.stringify({
   funds: Object.keys(holdings)
 });
 
-// ===== 暂时弱 sign（后续可逆向）=====
+// ⚠️ 先弱 sign（后面可逆向）
 const sign = "0";
 
-// ===== headers =====
 const headers = {
   "authorization": auth,
   "cookie": cookie,
@@ -54,7 +82,7 @@ $httpClient.post({ url, headers, body }, (err, resp, data) => {
   const list = obj?.data?.list || obj?.data || [];
 
   if (!Array.isArray(list) || !list.length) {
-    $notification.post("养基宝", "无数据", data.slice(0, 200));
+    $notification.post("养基宝", "无数据返回", data.slice(0, 200));
     $done();
     return;
   }
