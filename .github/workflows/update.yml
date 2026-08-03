@@ -1,4 +1,4 @@
-name: Update MTProto DC Config
+name: Update MTProto Config
 
 on:
   schedule:
@@ -9,28 +9,27 @@ permissions:
   contents: write
 
 jobs:
-  generate:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Rust
+      - name: Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
 
-      - name: Generate MTProto config
+      - name: Generate
         run: |
-          cd MTProtoDCConfigGenerator
-          cargo run --release -- ../mtproto-dc-config.json
+          cargo run --release -- mtproto-dc-config.json
 
-      - name: Commit changes
+      - name: Commit
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
 
           git add mtproto-dc-config.json
 
-          git commit -m "Update MTProto DC config" || exit 0
+          git commit -m "update mtproto config" || exit 0
 
           git push
