@@ -7,37 +7,11 @@ if (!body) {
 
 let html = body;
 
-// 1. 删除顶部广告列表
-html = html.replace(
-  /<div\s+class=["']show-text\s+cl["'][^>]*>[\s\S]*?<\/div>\s*<div\s+class=["']h10["']/gi,
-  '<div class="h10"'
-);
+// ============================================================
+// 98堂 / sehuatang.org 去广告
+// ============================================================
 
-// 2. 删除中间整个轮播横幅区域
-html = html.replace(
-  /<div\s+class=["']n5_jujiao["'][^>]*>[\s\S]*?<\/div>\s*<div\s+class=["']footer_menu["']/gi,
-  '<div class="footer_menu"'
-);
-
-// 3. 删除底部重复广告
-html = html.replace(
-  /<div\s+class=["']show-text\s+cl["'][^>]*>[\s\S]*?<\/div>\s*<div\s+class=["']n5_ssymdb["']/gi,
-  '<div class="n5_ssymdb"'
-);
-
-// 4. 删除动态广告/推荐模块
-html = html.replace(
-  /<script\s+src=["']\/api\.php\?mod=js&bid=(?:5|8|12|13|14|9)["'][^>]*><\/script>/gi,
-  ''
-);
-
-// 5. 保险：删除残留的广告轮播初始化
-html = html.replace(
-  /<script[^>]*>[\s\S]*?TouchSlide\s*\(\s*\{[\s\S]*?slideCell\s*:\s*["']#n5_mohd["'][\s\S]*?<\/script>/gi,
-  ''
-);
-
-// 6. 如果上面的节点因为模板改版没有匹配，再按具体广告链接清理
+// 1. 删除顶部和底部广告中的具体广告链接
 const adDomains = [
   'st7w6kz\\.com',
   'moulur\\.com',
@@ -58,15 +32,74 @@ const adDomains = [
 
 for (const domain of adDomains) {
   const re = new RegExp(
-    '<div\\s+class=["\']item["\'][\\s\\S]*?<a[^>]+href=["\'][^"\']*' +
+    '<div\\s+class=["\']item["\'][\\s\\S]*?' +
+    '<a[^>]+href=["\'][^"\']*' +
     domain +
     '[^"\']*["\'][\\s\\S]*?<\\/div>',
     'gi'
   );
+
   html = html.replace(re, '');
 }
 
-// 7. 清理可能留下的空广告容器
+// ============================================================
+// 2. 删除动态广告 JS
+// ============================================================
+
+html = html.replace(
+  /<script\s+src=["']\/api\.php\?mod=js&bid=(?:5|8|12|13|14|9)["'][^>]*>\s*<\/script>/gi,
+  ''
+);
+
+// ============================================================
+// 3. 删除轮播里的广告 li
+// ============================================================
+
+html = html.replace(
+  /<li>\s*<a[^>]+(?:sfmmqz\.cc|ztctyh\.com|zzacjt\.com)[^>]*>[\s\S]*?<\/a>\s*<\/li>/gi,
+  ''
+);
+
+// ============================================================
+// 4. 强制隐藏广告容器
+//
+// 这是关键。
+// 即使上面的 HTML 删除没有把外层 div 完整抠掉，
+// CSS 也会让它完全不占视觉空间。
+// ============================================================
+
+const adCSS = `
+<style id="sht-adblock">
+.show-text,
+.n5_jujiao,
+.n5_mohd,
+.n5_tbys,
+.n5_tbxj,
+.n5_ssymdb,
+#n5_mohd,
+.show-text.cl {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+</style>
+`;
+
+if (/<\/head>/i.test(html)) {
+  html = html.replace(/<\/head>/i, adCSS + '</head>');
+} else {
+  html = adCSS + html;
+}
+
+// ============================================================
+// 5. 清理明显残留的广告容器
+// ============================================================
+
 html = html.replace(
   /<div\s+class=["']show-text\s+cl["'][^>]*>\s*<\/div>/gi,
   ''
@@ -76,6 +109,8 @@ html = html.replace(
   /<div\s+class=["']n5_jujiao["'][^>]*>\s*<\/div>/gi,
   ''
 );
+
+// ============================================================
 
 $done({
   body: html
