@@ -23,30 +23,8 @@ http-response https://(hub|pluginhub)\.kelee\.one/list\.json "loon://import\?plu
 [Map Local]
 
 
-# 养基宝
-^https:\/\/app-api\.yangjibao\.com\/unify_ad$ data-type=text data="{}"
-
-# 养基宝
-^https:\/\/app-api\.yangjibao\.com\/single_ad\?type=ad_news$ data-type=text data="{}"
-
-# VIP 信息页广告
-^https:\/\/app-api\.yangjibao\.com\/vip_information\?page=1$ data-type=text data="{}"
-
-# Tab 配置
-^https:\/\/app-api\.yangjibao\.com\/users\/v1\/preferences\/tab-config$ data-type=text data="[]"
-
-# App 配置
-^https:\/\/app-api\.yangjibao\.com\/app_config$ data-type=text data="{}"
-
 #移动
 ^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/(explorePage\/getAdverList|init\/startInit) data-type=text data=""
-
-#美柚开屏
-^https:\/\/ad\.seeyouyima\.com\/v1\/getad\? data-type=text data="200"
-
-#知乎开屏
-^https:\/\/api\.zhihu\.com\/commercial_api\/real_time_launch_v2\? data-type=text data="200"
-
 
 
 #联通
@@ -59,4 +37,4 @@ http-response https://(hub|pluginhub)\.kelee\.one/list\.json "loon://import\?plu
 
 
 [MITM]  
-hostname = %APPEND% m.client.10010.com,client.app.coc.10086.cn,*.home.360.cn,api.zhihu.com,ad.seeyouyima.com,hub.kelee.one, pluginhub.kelee.one
+hostname = %APPEND% m.client.10010.com,client.app.coc.10086.cn,*.home.360.cn,api.zhihu.com,hub.kelee.one, pluginhub.kelee.one
