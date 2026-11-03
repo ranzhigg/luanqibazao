@@ -1,5 +1,5 @@
 #!name=去广告合集
-#!desc=去除常见广告，并移除下厨房首页早餐马拉松横幅和减脂菜单
+#!desc=移除下厨房广告、页面推广、早餐马拉松横幅，并精简首页标签
 #!requirement=CORE_VERSION>=20
 
 
@@ -18,7 +18,11 @@ http-request https://(hub|pluginhub)\.kelee\.one/list\.json header-del if-none-m
 
 [Body Rewrite]
 
-http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/homepage1810\/init_page\.json(?:\?.*)?$ 'del(.content.breakfast_marathon_entrance) | if (.content.explore_tabs | type) == "array" then .content.explore_tabs |= map(select(any(..; . == "减脂") | not)) else . end'
+http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/homepage\/paged_waterfall_recommendations\.json(?:\?.*)?$ 'del(.multiplex_cells[] | select(.recommendation_cell.impression_sensor_events[]?.properties.target_type? == "ad"))'
+
+http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/config\/get\.json(?:\?.*)?$ 'del(.content.recipe_ad, .content.splash_ad_req_time, .content.splash_sdk_ad_req_time, .content.splash_ad_lifecycle_interval, .content.waterfall_ad_feedback, .content.homepage_waterfall_test_ad_pos, .content.ad_app_look_around, .content.ad_sdk_text_removal_keywords)'
+
+http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/homepage\/ranking_list\/paged_homepage_ranking_list_section_v2\.json(?:\?.*)?$ '.cells |= map(del(.side_slip_activity_cell, .dish_square_cell))'
 
 http-response https://(hub|pluginhub)\.kelee\.one/list\.json "loon://import\?plugin=(https://kelee.one/Tool/Loon/Lpx/(.+).lpx)" "surge:///install-module?url=http://script.hub/file/_start_/$1/_end_/$2.sgmodule%3Ftype%3Dloon-plugin%26target%3Dsurge-module%26del%3Dtrue%26jqEnabled%3Dtrue%26pm%3D.%26sni%3D."
 
@@ -35,6 +39,12 @@ http-response https://(hub|pluginhub)\.kelee\.one/list\.json "loon://import\?plu
 
 #360智慧生活
 ^https:\/\/app\.home\.360\.cn\/v1\/config\/custom_config data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+#下厨房：按可莉 Loon 插件的 reject_dict(200) 等价返回空 JSON
+^https:\/\/api\.xiachufang\.com\/v2\/ad\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/api\.xiachufang\.com\/v2\/account\/feeds_v7\.json data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/api\.xiachufang\.com\/v2\/homepage1810\/init_page\.json data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/api\.xiachufang\.com\/v2\/mark_mission\/get_sticker_info\.json data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 
 [Script]
 
