@@ -1,5 +1,6 @@
 #!name=去广告合集
-#!desc=目前只有
+#!desc=去除常见广告，并移除下厨房首页早餐马拉松横幅和减脂菜单
+#!requirement=CORE_VERSION>=20
 
 
 
@@ -16,6 +17,8 @@ DOMAIN,m1.ad.10010.com,REJECT
 http-request https://(hub|pluginhub)\.kelee\.one/list\.json header-del if-none-match
 
 [Body Rewrite]
+
+http-response-jq ^https:\/\/api\.xiachufang\.com\/v2\/homepage1810\/init_page\.json$ 'del(.content.breakfast_marathon_entrance) | if (.content.explore_tabs | type) == "array" then .content.explore_tabs |= map(select(any(..; . == "减脂") | not)) else . end'
 
 http-response https://(hub|pluginhub)\.kelee\.one/list\.json "loon://import\?plugin=(https://kelee.one/Tool/Loon/Lpx/(.+).lpx)" "surge:///install-module?url=http://script.hub/file/_start_/$1/_end_/$2.sgmodule%3Ftype%3Dloon-plugin%26target%3Dsurge-module%26del%3Dtrue%26jqEnabled%3Dtrue%26pm%3D.%26sni%3D."
 
@@ -37,4 +40,4 @@ http-response https://(hub|pluginhub)\.kelee\.one/list\.json "loon://import\?plu
 
 
 [MITM]  
-hostname = %APPEND% m.client.10010.com,client.app.coc.10086.cn,*.home.360.cn,api.zhihu.com,hub.kelee.one, pluginhub.kelee.one
+hostname = %APPEND% m.client.10010.com,client.app.coc.10086.cn,*.home.360.cn,api.zhihu.com,api.xiachufang.com,hub.kelee.one, pluginhub.kelee.one
